@@ -3,332 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Task Database Management</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>TaskFlow</title>
 
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 body{
     min-height:100vh;
     background:linear-gradient(135deg,#0f172a,#312e81,#0891b2);
-    overflow:hidden;
     color:white;
+    padding:15px;
 }
 
-/* Animated Background */
-.bg{
-    position:absolute;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-}
-
-.blob{
-    position:absolute;
-    border-radius:50%;
-    filter:blur(80px);
-    opacity:.4;
-    animation:float 10s infinite ease-in-out;
-}
-
-.blob:nth-child(1){
-    width:300px;
-    height:300px;
-    background:#00d4ff;
-    top:10%;
-    left:10%;
-}
-
-.blob:nth-child(2){
-    width:250px;
-    height:250px;
-    background:#ff4fd8;
-    bottom:10%;
-    right:10%;
-}
-
-.blob:nth-child(3){
-    width:200px;
-    height:200px;
-    background:#6d5dfc;
-    top:50%;
-    left:50%;
-}
-
-@keyframes float{
-    50%{
-        transform:translateY(-20px) scale(1.05);
-    }
+.glass{
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,.15);
 }
 
 .container{
-    position:relative;
-    z-index:2;
-    display:flex;
-    height:100vh;
-    padding:20px;
-    gap:20px;
+    display:grid;
+    grid-template-columns:250px 1fr;
+    gap:15px;
 }
 
-/* Glass Effect */
-.glass{
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,0.15);
-    box-shadow:0 8px 32px rgba(0,0,0,.25);
-}
-
-/* Sidebar */
 .sidebar{
-    width:260px;
-    border-radius:25px;
-    padding:25px;
+    border-radius:20px;
+    padding:20px;
 }
 
 .logo{
     font-size:24px;
-    font-weight:700;
-    margin-bottom:40px;
+    font-weight:bold;
+    margin-bottom:20px;
 }
 
-.menu{
+.menu button{
+    width:100%;
+    margin-bottom:10px;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:rgba(255,255,255,.08);
+    color:white;
+}
+
+.menu button:hover{
+    background:rgba(255,255,255,.15);
+}
+
+.main{
     display:flex;
     flex-direction:column;
     gap:15px;
 }
 
-.menu a{
-    text-decoration:none;
-    color:white;
-    padding:12px;
-    border-radius:12px;
-    transition:.3s;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,.12);
-}
-
-/* Main */
-.main{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
 .topbar{
-    border-radius:25px;
-    padding:20px;
+    border-radius:20px;
+    padding:15px;
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
 
-.search{
-    width:300px;
-    padding:12px;
+.addBtn{
+    padding:10px 20px;
     border:none;
     border-radius:12px;
-    background:rgba(255,255,255,.1);
-    color:white;
+    cursor:pointer;
 }
 
-.search::placeholder{
-    color:#ddd;
-}
-
-.profile{
-    font-weight:600;
-}
-
-/* Stats */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
-}
-
-.card{
-    border-radius:20px;
-    padding:20px;
-}
-
-.card h2{
-    margin-top:10px;
-}
-
-/* Board */
 .board{
-    flex:1;
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:20px;
+    gap:15px;
 }
 
 .column{
     border-radius:20px;
-    padding:20px;
-}
-
-.column h3{
-    margin-bottom:15px;
+    padding:15px;
+    min-height:400px;
 }
 
 .task{
+    padding:12px;
+    border-radius:12px;
+    margin-top:10px;
+    cursor:pointer;
     background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.15);
-    border-radius:15px;
-    padding:15px;
-    margin-bottom:12px;
-    transition:.3s;
 }
 
 .task:hover{
-    transform:translateY(-4px);
+    transform:translateY(-2px);
 }
 
-.priority-high{
-    border-left:4px solid #ff4d6d;
-}
+@media(max-width:900px){
 
-.priority-medium{
-    border-left:4px solid #ffc857;
-}
-
-.priority-low{
-    border-left:4px solid #4ade80;
-}
-
-.status{
-    font-size:12px;
-    opacity:.8;
-    margin-top:8px;
-}
-
-@media(max-width:1100px){
-    .stats{
-        grid-template-columns:repeat(2,1fr);
+    .container{
+        grid-template-columns:1fr;
     }
 
     .board{
         grid-template-columns:1fr;
     }
 
-    body{
-        overflow:auto;
+    .topbar{
+        flex-direction:column;
+        gap:10px;
     }
 }
 </style>
 </head>
 <body>
 
-<div class="bg">
-    <div class="blob"></div>
-    <div class="blob"></div>
-    <div class="blob"></div>
-</div>
-
 <div class="container">
 
-    <aside class="sidebar glass">
+    <div class="sidebar glass">
         <div class="logo">✨ TaskFlow</div>
 
         <div class="menu">
-            <a href="#">🏠 Dashboard</a>
-            <a href="#">📋 Tasks</a>
-            <a href="#">📁 Projects</a>
-            <a href="#">📊 Reports</a>
-            <a href="#">⚙ Settings</a>
+            <button onclick="showPage('Dashboard')">Dashboard</button>
+            <button onclick="showPage('Tasks')">Tasks</button>
+            <button onclick="showPage('Projects')">Projects</button>
+            <button onclick="showPage('Reports')">Reports</button>
         </div>
-    </aside>
+    </div>
 
-    <main class="main">
+    <div class="main">
 
         <div class="topbar glass">
-            <input class="search" placeholder="Search tasks...">
-            <div class="profile">👤 Admin User</div>
-        </div>
-
-        <div class="stats">
-            <div class="card glass">
-                <small>Total Tasks</small>
-                <h2>128</h2>
-            </div>
-
-            <div class="card glass">
-                <small>Completed</small>
-                <h2>89</h2>
-            </div>
-
-            <div class="card glass">
-                <small>In Progress</small>
-                <h2>24</h2>
-            </div>
-
-            <div class="card glass">
-                <small>Overdue</small>
-                <h2>15</h2>
-            </div>
+            <h2 id="pageTitle">Dashboard</h2>
+            <button class="addBtn" onclick="addTask()">+ Add Task</button>
         </div>
 
         <div class="board">
 
             <div class="column glass">
-                <h3>📌 To Do</h3>
-
-                <div class="task priority-high">
-                    <strong>Database Setup</strong>
-                    <div class="status">High Priority</div>
-                </div>
-
-                <div class="task priority-medium">
-                    <strong>Design Dashboard</strong>
-                    <div class="status">Medium Priority</div>
-                </div>
+                <h3>To Do</h3>
+                <div id="todo"></div>
             </div>
 
             <div class="column glass">
-                <h3>🚀 In Progress</h3>
-
-                <div class="task priority-high">
-                    <strong>Task Module</strong>
-                    <div class="status">Working...</div>
-                </div>
-
-                <div class="task priority-low">
-                    <strong>UI Improvements</strong>
-                    <div class="status">60% Complete</div>
-                </div>
+                <h3>In Progress</h3>
+                <div id="progress"></div>
             </div>
 
             <div class="column glass">
-                <h3>✅ Completed</h3>
-
-                <div class="task priority-low">
-                    <strong>Project Structure</strong>
-                    <div class="status">Done</div>
-                </div>
-
-                <div class="task priority-low">
-                    <strong>Login Screen</strong>
-                    <div class="status">Done</div>
-                </div>
+                <h3>Completed</h3>
+                <div id="done"></div>
             </div>
 
         </div>
 
-    </main>
+    </div>
 
 </div>
+
+<script>
+
+const tasks = [
+    {title:"Create Database"},
+    {title:"Design UI"}
+];
+
+function renderTasks(){
+
+    const todo = document.getElementById("todo");
+    todo.innerHTML = "";
+
+    tasks.forEach((task,index)=>{
+
+        const div = document.createElement("div");
+        div.className = "task";
+
+        div.innerHTML = task.title;
+
+        div.onclick = ()=>{
+            alert("Task Selected: " + task.title);
+        };
+
+        todo.appendChild(div);
+    });
+}
+
+function addTask(){
+
+    const taskName = prompt("Enter Task Name");
+
+    if(taskName){
+        tasks.push({title:taskName});
+        renderTasks();
+    }
+}
+
+function showPage(page){
+
+    document.getElementById("pageTitle").innerText = page;
+
+    alert(page + " clicked");
+}
+
+renderTasks();
+
+</script>
 
 </body>
 </html>
